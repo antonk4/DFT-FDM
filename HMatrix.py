@@ -15,11 +15,11 @@ startTime = time.perf_counter()
 
 h = 0.05
 N = 100
-eigen = 29
-eigens = 40
+eigen = 1
+eigens = 5
 totalProb = 0.95
 
-calculate = False
+calculate = True
 render = True
 
 SCREEN_SIZE = (800, 600)
@@ -652,8 +652,8 @@ class setUpFunctions:
   def setUpPoints(h: float, N: int, eigen:int):
     global threshold, eigenstate, eigenvalues, eigenstate_3d
 
-    eigenvalues = np.load('eigenvalues1.npy')
-    eigenstate = np.load('eigenstates1.npy')[:, eigen-1]
+    eigenvalues = np.load('eigenvalues.npy')
+    eigenstate = np.load('eigenstates.npy')[:, eigen-1]
 
     sortedEigenstate = np.sort(eigenstate**2, descending=True)
     low = 0
@@ -750,10 +750,10 @@ class mathFunctions:
     return -1/np.sqrt(x**2 + y**2 + z**2)
   @staticmethod
   def calcEigens(h: float, h2: float, N: int, eigens: int):
-    #if os.path.exists('eigenvalues.npy'):
-    #  os.remove('eigenvalues.npy')
-    #if os.path.exists('eigenstates.npy'):
-    #  os.remove('eigenstates.npy')
+    if os.path.exists('eigenvalues.npy'):
+      os.remove('eigenvalues.npy')
+    if os.path.exists('eigenstates.npy'):
+      os.remove('eigenstates.npy')
 
     matrixT = sparse.diags_array([6/h2, -1/h2, -1/h2, -1/h2, -1/h2, -1/h2, -1/h2], offsets=[0, N**2, -N**2, 1, -1, N, -N], dtype=None, shape=(N**3, N**3))
 
@@ -782,8 +782,8 @@ class mathFunctions:
 
     eigenvalues, eigenstates = sparse.linalg.eigsh(matrixAll, k=eigens, which='SM')
 
-    np.save('eigenvalues1.npy', eigenvalues)
-    np.save('eigenstates1.npy', eigenstates)
+    np.save('eigenvalues.npy', eigenvalues)
+    np.save('eigenstates.npy', eigenstates)
 
 if calculate:
   mathFunctions.calcEigens(h, h**2, N, eigens)
